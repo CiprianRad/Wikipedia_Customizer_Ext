@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     'toggle-bottom-info': 'hide-bottom-info',
     'toggle-refs-links': 'hide-refs-links',
     'toggle-see-also': 'hide-see-also',
-    'toggle-categories': 'hide-categories'
+    'toggle-categories': 'hide-categories',
+    'toggle-quiz-mode': 'quiz-mode'
   };
 
   // Load saved states
