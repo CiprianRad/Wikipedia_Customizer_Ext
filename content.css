@@ -1,0 +1,62 @@
+/* Left Sidebar */
+body.hide-left-sidebar #mw-panel,
+body.hide-left-sidebar .mw-sidebar,
+body.hide-left-sidebar #vector-main-menu-dropdown,
+body.hide-left-sidebar #vector-main-menu,
+body.hide-left-sidebar .vector-column-start {
+  display: none !important;
+}
+
+/* Force content to span into the empty grid tracks left by hidden sidebars */
+body.hide-left-sidebar:not(.hide-right-sidebar) .mw-content-container {
+  grid-column: 1 / 3 !important;
+}
+
+body.hide-right-sidebar:not(.hide-left-sidebar) .mw-content-container {
+  grid-column: 2 / 4 !important;
+}
+
+body.hide-left-sidebar.hide-right-sidebar .mw-content-container {
+  grid-column: 1 / 4 !important;
+}
+
+/* Banners */
+body.hide-banners #siteNotice,
+body.hide-banners .cn-fundraising,
+body.hide-banners #centralNotice {
+  display: none !important;
+}
+
+/* Right Sidebar (Tools) */
+body.hide-right-sidebar .vector-column-end,
+body.hide-right-sidebar #vector-page-tools-dropdown,
+body.hide-right-sidebar #p-views {
+  display: none !important;
+}
+
+/* Top Header Bar */
+body.hide-top-header .mw-header,
+body.hide-top-header #mw-head {
+  display: none !important;
+}
+
+/* Bottom Info */
+body.hide-bottom-info #footer,
+body.hide-bottom-info .mw-footer {
+  display: none !important;
+}
+
+/* Javascript-driven Section Hiding */
+.hidden-by-extension {
+  display: none !important;
+}
+
+/* Inline References */
+body.hide-refs-links sup.reference {
+  display: none !important;
+}
+
+/* Categories */
+body.hide-categories #catlinks {
+  display: none !important;
+}
