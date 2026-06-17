@@ -61,72 +61,27 @@ body.hide-refs-links sup.noprint {
   display: none !important;
 }
 
+/* Hide Hatnotes (Redirects / For other uses) */
+body.hide-hatnotes .hatnote,
+body.hide-hatnotes .mw-empty-elt {
+  display: none !important;
+}
+
 /* Categories */
 body.hide-categories #catlinks {
   display: none !important;
 }
 
-/* Remove blank space at bottom when any bottom elements are hidden */
-body.hide-categories .mw-page-container,
-body.hide-bottom-info .mw-page-container,
-body.hide-refs-links .mw-page-container,
-body.hide-see-also .mw-page-container,
 
-body.hide-categories .mw-page-container-inner,
-body.hide-bottom-info .mw-page-container-inner,
-
-body.hide-categories .mw-content-container,
-body.hide-bottom-info .mw-content-container,
-
-body.hide-categories .vector-body,
-body.hide-bottom-info .vector-body,
-
-body.hide-categories .mw-body,
-body.hide-bottom-info .mw-body,
-
-body.hide-categories #bodyContent,
-body.hide-bottom-info #bodyContent,
-
-body.hide-categories .mw-parser-output,
-body.hide-bottom-info .mw-parser-output,
-
-body.hide-categories .vector-column-start,
-body.hide-bottom-info .vector-column-start,
-
-body.hide-categories .vector-column-end,
-body.hide-bottom-info .vector-column-end,
-
-body.hide-categories #mw-panel,
-body.hide-bottom-info #mw-panel,
-
-body.hide-categories .vector-toc-pinned-container,
-body.hide-bottom-info .vector-toc-pinned-container,
-
-body.hide-categories #content,
-body.hide-bottom-info #content,
-
-body.hide-categories .mw-page-container,
-body.hide-bottom-info .mw-page-container {
-  padding-bottom: 0 !important;
-  margin-bottom: 0 !important;
-  min-height: 0 !important;
-  height: auto !important;
-}
-
-/* Force document root to collapse */
-html, body, .mw-page-container, .mw-page-container-inner, .mw-content-container, .mw-body, #content, #bodyContent, .mw-parser-output {
-  min-height: 0 !important;
-  height: max-content !important;
-}
-
-html::after, body::after, .mw-page-container::after, .mw-page-container-inner::after, .mw-content-container::after {
-  display: none !important;
-  content: none !important;
-}
 
 /* =======================================
    Systematic Learning Mode (Quiz Mode)
    ======================================= */
+
+/* Force main containers to stretch to the bottom of the viewport so background colors don't cut off */
+html, body, .mw-page-container, .mw-page-container-inner, .mw-content-container {
+  min-height: 100vh !important;
+}
 
 .quiz-locked {
   display: none !important;

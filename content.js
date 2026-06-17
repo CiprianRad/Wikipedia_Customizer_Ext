@@ -5,6 +5,7 @@ const classes = [
   'hide-top-header',
   'hide-bottom-info',
   'hide-refs-links',
+  'hide-hatnotes',
   'hide-see-also',
   'hide-categories',
   'quiz-mode'
@@ -191,7 +192,7 @@ function injectQuizButton() {
       btn.innerText = 'Take Quiz to Unlock Next Section';
     }
     
-    btn.onclick = openQuizModal;
+    btn.onclick = () => openQuizModal(btn);
     
     if (targetHeading.classList.contains('mw-heading')) {
        // Vector 2022 uses a wrapper .mw-heading containing the h2
@@ -210,59 +211,104 @@ function injectQuizButton() {
   }
 }
 
-function openQuizModal() {
-  const modalHtml = `
-    <div id="wiki-quiz-overlay">
-      <div id="wiki-quiz-modal">
-        <h3>Section Review</h3>
-        <p>Before advancing, please answer a quick question to verify your understanding of this section.</p>
-        <div class="quiz-question-box">
-          <strong>Question:</strong> Did you read and understand the material in this section?
-        </div>
-        <div class="quiz-options">
-          <button class="quiz-option" data-correct="false">No, I skipped it.</button>
-          <button class="quiz-option" data-correct="false">What is a Wikipedia?</button>
-          <button class="quiz-option" data-correct="true">Yes, I am ready to unlock the next section!</button>
-          <button class="quiz-option" data-correct="false">I need more time.</button>
+function openQuizModal(btn) {
+  const currentSec = quizState.sections[quizState.currentIndex];
+  if (!currentSec) return;
+  
+  // Extract text from section
+  let sectionText = "";
+  if (currentSec.heading) {
+      sectionText += currentSec.heading.innerText + "\n";
+  }
+  currentSec.elements.forEach(el => {
+      sectionText += el.innerText + "\n";
+  });
+  
+  // Short circuit if it's literally empty (unlikely)
+  if (!sectionText.trim()) sectionText = "This section appears to have no readable text.";
+
+  // Set loading state
+  const originalText = btn.innerText;
+  btn.innerText = 'Generating AI Quiz...';
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
+  btn.style.cursor = 'wait';
+
+  chrome.runtime.sendMessage({ action: 'generateQuiz', sectionText: sectionText }, (response) => {
+    // Restore button state
+    btn.innerText = originalText;
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+
+    if (!response || !response.success) {
+      alert("Failed to generate quiz: " + (response ? response.error : "Unknown error"));
+      return;
+    }
+
+    const quiz = response.quiz;
+    
+    // Shuffle options
+    const shuffledOptions = [...quiz.options].sort(() => Math.random() - 0.5);
+
+    let optionsHtml = '';
+    shuffledOptions.forEach(opt => {
+      optionsHtml += `<button class="quiz-option" data-correct="${opt.isCorrect}">${opt.text}</button>`;
+    });
+
+    const modalHtml = `
+      <div id="wiki-quiz-overlay">
+        <div id="wiki-quiz-modal">
+          <h3>AI Section Review</h3>
+          <p>Answer correctly to unlock the next section.</p>
+          <div class="quiz-question-box">
+            <strong>Question:</strong> ${quiz.question}
+          </div>
+          <div class="quiz-options">
+            ${optionsHtml}
+          </div>
         </div>
       </div>
-    </div>
-  `;
-  
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
-  
-  document.querySelectorAll('.quiz-option').forEach(btn => {
-    btn.onclick = function() {
-      if (this.dataset.correct === 'true') {
-        this.style.backgroundColor = '#4caf50';
-        this.style.color = 'white';
-        this.style.borderColor = '#4caf50';
-        setTimeout(() => {
-          document.getElementById('wiki-quiz-overlay').remove();
-          quizState.currentIndex++;
-          renderQuizMode();
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    document.querySelectorAll('.quiz-option').forEach(optionBtn => {
+      optionBtn.onclick = function() {
+        if (this.dataset.correct === 'true') {
+          this.style.backgroundColor = '#4caf50';
+          this.style.color = 'white';
+          this.style.borderColor = '#4caf50';
           
-          // Scroll to the newly unlocked section
-          const newSec = quizState.sections[quizState.currentIndex];
-          if (newSec && newSec.heading) {
-            newSec.heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }, 600);
-      } else {
-        this.style.backgroundColor = '#ffebee';
-        this.style.color = '#c62828';
-        this.style.borderColor = '#ef9a9a';
-        
-        // Close modal after a brief pause and trigger 30s cooldown
-        setTimeout(() => {
-          const overlay = document.getElementById('wiki-quiz-overlay');
-          if (overlay) overlay.remove();
+          setTimeout(() => {
+            const overlay = document.getElementById('wiki-quiz-overlay');
+            if (overlay) overlay.remove();
+            
+            quizState.currentIndex++;
+            renderQuizMode();
+            
+            // Scroll to the newly unlocked section
+            const newSec = quizState.sections[quizState.currentIndex];
+            if (newSec && newSec.heading) {
+              newSec.heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }, 600);
+        } else {
+          this.style.backgroundColor = '#ffebee';
+          this.style.color = '#c62828';
+          this.style.borderColor = '#ef9a9a';
           
-          quizState.cooldownUntil = Date.now() + 30000;
-          injectQuizButton(); // Re-render button to show cooldown
-        }, 1000);
-      }
-    };
+          // Close modal after a brief pause and trigger 30s cooldown
+          setTimeout(() => {
+            const overlay = document.getElementById('wiki-quiz-overlay');
+            if (overlay) overlay.remove();
+            
+            quizState.cooldownUntil = Date.now() + 30000;
+            injectQuizButton(); // Re-render button to show cooldown
+          }, 1000);
+        }
+      };
+    });
   });
 }
 

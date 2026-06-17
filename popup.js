@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'toggle-top-header': 'hide-top-header',
     'toggle-bottom-info': 'hide-bottom-info',
     'toggle-refs-links': 'hide-refs-links',
+    'toggle-hatnotes': 'hide-hatnotes',
     'toggle-see-also': 'hide-see-also',
     'toggle-categories': 'hide-categories',
     'toggle-quiz-mode': 'quiz-mode'
