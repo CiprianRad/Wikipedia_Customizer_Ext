@@ -79,7 +79,3 @@ A Chrome extension (Manifest V3) that declutters Wikipedia's UI and turns articl
 
 - Quiz questions are generated fresh each time — there's no caching, so the same section may produce different questions on repeat visits.
 - Requires a valid Gemini API key to use Quiz Mode; the UI decluttering features work without one.
-
-## License
-
-Add your preferred license here (e.g., MIT).
