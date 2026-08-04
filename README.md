@@ -1,6 +1,7 @@
 # Wikipedia Systematic Learning
+# Wikipedia Systematic Learning
 
-A Chrome extension (Manifest V3) that decoughters Wikipedia's UI and turns article reading into a guided, quiz-gated learning experience powered by Google's Gemini API.
+A Chrome extension (Manifest V3) that declutters Wikipedia's UI and turns article reading into a guided, quiz-gated learning experience powered by Google's Gemini API.
 
 ## Features
 
@@ -24,10 +25,10 @@ A Chrome extension (Manifest V3) that decoughters Wikipedia's UI and turns artic
 
 ## How It Works
 
-1. **Popup (`popup.html` / `popup.js`)** — Lets the user toggle each UI element and Quiz Mode on/off. Settings are persisted via `chrome.storage.local` and pushed to the active tab.
-2. **Content script (`content.js`)** — Runs on `*.wikipedia.org` pages. Applies/removes CSS classes based on stored settings, parses the article into sections, and manages the quiz-lock/unlock flow.
-3. **Background service worker (`background.js`)** — Handles quiz generation by calling the Gemini API (`gemini-2.5-flash`) with the section's text and parsing the structured JSON response.
-4. **Options page (`options.html` / `options.js`)** — Where the user enters and saves their own Gemini API key.
+1. **Popup** (`popup.html`, `popup.js`) — Lets the user toggle each UI element and Quiz Mode on/off. Settings are persisted via `chrome.storage.local` and pushed to the active tab.
+2. **Content script** (`content.js`) — Runs on `*.wikipedia.org` pages. Applies/removes CSS classes based on stored settings, parses the article into sections, and manages the quiz-lock/unlock flow.
+3. **Background service worker** (`background.js`) — Handles quiz generation by calling the Gemini API (`gemini-2.5-flash`) with the section's text and parsing the structured JSON response.
+4. **Options page** (`options.html`, `options.js`) — Where the user enters and saves their own Gemini API key.
 
 ## Installation
 
@@ -61,3 +62,25 @@ A Chrome extension (Manifest V3) that decoughters Wikipedia's UI and turns artic
 | `host_permissions` (`generativelanguage.googleapis.com`) | Call the Gemini API to generate quizzes |
 
 ## Project Structure
+
+```
+.
+|-- manifest.json       Extension configuration (Manifest V3)
+|-- popup.html
+|-- popup.js
+|-- popup.css           Toggle UI shown when clicking the extension icon
+|-- options.html
+|-- options.js          Page for entering the Gemini API key
+|-- content.js
+|-- content.css         Injected into Wikipedia pages; handles UI toggles and Quiz Mode
+`-- background.js       Service worker; calls the Gemini API
+```
+
+## Notes
+
+- Quiz questions are generated fresh each time — there's no caching, so the same section may produce different questions on repeat visits.
+- Requires a valid Gemini API key to use Quiz Mode; the UI decluttering features work without one.
+
+## License
+
+Add your preferred license here (e.g., MIT).
