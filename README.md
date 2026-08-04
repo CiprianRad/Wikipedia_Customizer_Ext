@@ -1,5 +1,4 @@
 # Wikipedia Systematic Learning
-# Wikipedia Systematic Learning
 
 A Chrome extension (Manifest V3) that declutters Wikipedia's UI and turns article reading into a guided, quiz-gated learning experience powered by Google's Gemini API.
 
